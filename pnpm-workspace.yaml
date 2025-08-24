@@ -1,8 +1,8 @@
 packages:
-  - "apps/*"
-  - "services/*"
-  - "libs/*"
-  - "tools/*"
-
+  - 'apps/*'
+  - 'services/*'
+  - 'libs/*'
+  - 'tools/*'
+  - 'apps/ticketing/*'
 autoInstallPeers: true
 strictPeerDependencies: false

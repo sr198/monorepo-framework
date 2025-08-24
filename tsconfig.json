@@ -2,5 +2,18 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/ticketing/web-e2e"
+    },
+    {
+      "path": "./apps/ticketing/web"
+    },
+    {
+      "path": "./services/api-gateway"
+    },
+    {
+      "path": "./services/ticket-service"
+    }
+  ]
 }

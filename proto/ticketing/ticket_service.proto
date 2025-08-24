@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package workalaya.ticketing;
+
+import "common/common.proto";
+
+option go_package = "github.com/workalaya/monorepo/proto/ticketing";
+
+// Ticket priority levels
+enum TicketPriority {
+  PRIORITY_UNKNOWN = 0;
+  PRIORITY_LOW = 1;
+  PRIORITY_MEDIUM = 2;
+  PRIORITY_HIGH = 3;
+  PRIORITY_CRITICAL = 4;
+}
+
+// Ticket status
+enum TicketStatus {
+  STATUS_UNKNOWN = 0;
+  STATUS_OPEN = 1;
+  STATUS_IN_PROGRESS = 2;
+  STATUS_RESOLVED = 3;
+  STATUS_CLOSED = 4;
+}
+
+// Ticket message
+message Ticket {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  TicketPriority priority = 4;
+  TicketStatus status = 5;
+  string assignee_id = 6;
+  string reporter_id = 7;
+  repeated string tags = 8;
+  common.Timestamp created_at = 9;
+  common.Timestamp updated_at = 10;
+  common.Timestamp due_date = 11;
+}
+
+// Create ticket request
+message CreateTicketRequest {
+  string title = 1;
+  string description = 2;
+  TicketPriority priority = 3;
+  string reporter_id = 4;
+  repeated string tags = 5;
+  common.Timestamp due_date = 6;
+}
+
+message CreateTicketResponse {
+  Ticket ticket = 1;
+  common.ErrorResponse error = 2;
+}
+
+// Get ticket request
+message GetTicketRequest {
+  string id = 1;
+}
+
+message GetTicketResponse {
+  Ticket ticket = 1;
+  common.ErrorResponse error = 2;
+}
+
+// List tickets request
+message ListTicketsRequest {
+  common.PaginationRequest pagination = 1;
+  TicketStatus status = 2;
+  TicketPriority priority = 3;
+  string assignee_id = 4;
+}
+
+message ListTicketsResponse {
+  repeated Ticket tickets = 1;
+  common.PaginationResponse pagination = 2;
+  common.ErrorResponse error = 3;
+}
+
+// Update ticket request
+message UpdateTicketRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  TicketPriority priority = 4;
+  TicketStatus status = 5;
+  string assignee_id = 6;
+  repeated string tags = 7;
+  common.Timestamp due_date = 8;
+}
+
+message UpdateTicketResponse {
+  Ticket ticket = 1;
+  common.ErrorResponse error = 2;
+}
+
+// Hello World request (for testing)
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string message = 1;
+  string service = 2;
+  common.Timestamp timestamp = 3;
+}
+
+// Ticket service definition
+service TicketService {
+  // Hello endpoint for testing gRPC connectivity
+  rpc Hello(HelloRequest) returns (HelloResponse);
+  
+  // CRUD operations for tickets
+  rpc CreateTicket(CreateTicketRequest) returns (CreateTicketResponse);
+  rpc GetTicket(GetTicketRequest) returns (GetTicketResponse);
+  rpc ListTickets(ListTicketsRequest) returns (ListTicketsResponse);
+  rpc UpdateTicket(UpdateTicketRequest) returns (UpdateTicketResponse);
+}

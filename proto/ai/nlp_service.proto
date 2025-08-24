@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package workalaya.ai;
+
+import "common/common.proto";
+
+option go_package = "github.com/workalaya/monorepo/proto/ai";
+
+// Supported languages
+enum Language {
+  LANGUAGE_UNKNOWN = 0;
+  LANGUAGE_ENGLISH = 1;
+  LANGUAGE_NEPALI = 2;
+  LANGUAGE_NEPALIGLISH = 3;
+}
+
+// Sentiment analysis result
+enum Sentiment {
+  SENTIMENT_UNKNOWN = 0;
+  SENTIMENT_POSITIVE = 1;
+  SENTIMENT_NEGATIVE = 2;
+  SENTIMENT_NEUTRAL = 3;
+}
+
+// Text classification categories
+enum TextCategory {
+  CATEGORY_UNKNOWN = 0;
+  CATEGORY_TECHNICAL_ISSUE = 1;
+  CATEGORY_BILLING_INQUIRY = 2;
+  CATEGORY_FEATURE_REQUEST = 3;
+  CATEGORY_COMPLAINT = 4;
+  CATEGORY_COMPLIMENT = 5;
+}
+
+// Text analysis request
+message TextAnalysisRequest {
+  string text = 1;
+  Language language = 2;
+  bool include_sentiment = 3;
+  bool include_classification = 4;
+  bool include_entities = 5;
+}
+
+// Named entity
+message Entity {
+  string text = 1;
+  string type = 2;
+  float confidence = 3;
+  int32 start_pos = 4;
+  int32 end_pos = 5;
+}
+
+// Text analysis response
+message TextAnalysisResponse {
+  Sentiment sentiment = 1;
+  float sentiment_confidence = 2;
+  TextCategory category = 3;
+  float category_confidence = 4;
+  repeated Entity entities = 5;
+  Language detected_language = 6;
+  common.ErrorResponse error = 7;
+}
+
+// Translation request
+message TranslationRequest {
+  string text = 1;
+  Language source_language = 2;
+  Language target_language = 3;
+}
+
+message TranslationResponse {
+  string translated_text = 1;
+  Language detected_source_language = 2;
+  float confidence = 3;
+  common.ErrorResponse error = 4;
+}
+
+// Hello World request (for testing)
+message HelloRequest {
+  string name = 1;
+  Language language = 2;
+}
+
+message HelloResponse {
+  string message = 1;
+  string service = 2;
+  Language response_language = 3;
+  common.Timestamp timestamp = 4;
+}
+
+// Batch processing request
+message BatchTextAnalysisRequest {
+  repeated string texts = 1;
+  Language language = 2;
+  bool include_sentiment = 3;
+  bool include_classification = 4;
+}
+
+message BatchTextAnalysisResponse {
+  repeated TextAnalysisResponse results = 1;
+  common.ErrorResponse error = 2;
+}
+
+// NLP service definition
+service NLPService {
+  // Hello endpoint for testing gRPC connectivity
+  rpc Hello(HelloRequest) returns (HelloResponse);
+  
+  // Text analysis capabilities
+  rpc AnalyzeText(TextAnalysisRequest) returns (TextAnalysisResponse);
+  rpc BatchAnalyzeText(BatchTextAnalysisRequest) returns (BatchTextAnalysisResponse);
+  
+  // Translation capabilities
+  rpc TranslateText(TranslationRequest) returns (TranslationResponse);
+  
+  // Health check
+  rpc HealthCheck(common.HealthCheckRequest) returns (common.HealthCheckResponse);
+}
